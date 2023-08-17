@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setLoader } from "../redux/actions";
+import { setLoader } from "../redux/actionCreators";
 import store from "../redux/store";
 
 const axiosInstance = axios.create({

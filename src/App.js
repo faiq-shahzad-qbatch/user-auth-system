@@ -1,13 +1,13 @@
 import React from "react";
 import BackgroundImage from "./components/BackgroundImage";
-// import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+// import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
     <>
       <BackgroundImage>
-        {/* <SignUpPage /> */}
+        <SignUpPage />
         {/* <LoginPage /> */}
       </BackgroundImage>
     </>
