@@ -1,20 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 
+import App from "./App";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import reportWebVitals from "./reportWebVitals";
 import store from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  // </React.StrictMode>,
+  <GoogleOAuthProvider clientId="370286411205-04bmtj9ugnoor8gfjo625vtr8h1acagn.apps.googleusercontent.com">
+    {/* <React.StrictMode> */}
+    <Provider store={store}>
+      <App />
+    </Provider>
+    {/* </React.StrictMode> */}
+  </GoogleOAuthProvider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

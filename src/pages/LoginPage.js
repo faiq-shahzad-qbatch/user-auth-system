@@ -1,7 +1,9 @@
+import { Link, useNavigate } from "react-router-dom";
 import React, { useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
 
+import { GoogleLogin } from "@react-oauth/google";
 import Loader from "../components/Loader";
+import { ToastContainer } from "react-toastify";
 import axiosInstance from "../utils/axiosUtils";
 import { useSelector } from "react-redux";
 
@@ -10,6 +12,8 @@ function LoginPage() {
 
   const emailRef = useRef();
   const passwordRef = useRef();
+
+  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -27,9 +31,9 @@ function LoginPage() {
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
 
-      toast("Login Successful!");
+      // toast("Login Successful!");
+      navigate("/home");
     } catch (error) {
-      console.error(error);
       alert(error.response.data.message);
     }
   }
@@ -66,6 +70,23 @@ function LoginPage() {
               Login
             </button>
           </form>
+          <div className="mt-4">
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                console.log(credentialResponse);
+                navigate("/home");
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          </div>
+          <p className="mt-4">
+            Not a user?{" "}
+            <Link to={"/"} className=" text-blue-500 underline">
+              Sign Up
+            </Link>
+          </p>
         </div>
       </div>
     </>
