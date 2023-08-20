@@ -9,8 +9,7 @@ function Loader({ show }) {
           show ? "visible" : "invisible"
         }`}
       >
-        <div className=" fixed inset-0 bg-slate-300 opacity-50"></div>
-
+        <div className="fixed inset-0 bg-slate-300 opacity-50"></div>
         <div className="relative">
           <TailSpin
             height="80"

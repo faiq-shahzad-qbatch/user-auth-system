@@ -1,4 +1,4 @@
-import { combineReducers, legacy_createStore as createStore } from "redux"; // Import createStore directly
+import { combineReducers, legacy_createStore as createStore } from "redux";
 
 import { composeWithDevTools } from "redux-devtools-extension";
 import { loaderReducer } from "./reducers";

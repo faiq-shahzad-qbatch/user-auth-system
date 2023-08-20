@@ -1,21 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 
-import Loader from "../components/Loader";
-import { ToastContainer } from "react-toastify";
+import { ToastContext } from "../contexts/ToastContext";
 import _ from "lodash";
 import axiosInstance from "../utils/axiosUtils";
 import notifySlack from "../utils/notifySlack";
-import { useSelector } from "react-redux";
 import validatePassword from "../utils/validatePassword";
 
 function SignUpPage() {
-  const showLoader = useSelector((state) => state.loaderReducer.showLoader);
-
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+
+  const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -25,7 +23,9 @@ function SignUpPage() {
     if (passwordRef.current.value === confirmPasswordRef.current.value) {
       const rules = validatePassword(passwordRef.current.value);
 
-      if (rules.length === 0) {
+      console.log(rules);
+
+      if (_.isEmpty(rules)) {
         const body = {
           name: nameRef.current.value,
           email: emailRef.current.value,
@@ -34,59 +34,70 @@ function SignUpPage() {
         };
 
         try {
-          await axiosInstance.post("/users/", body);
-          // toast("Sign Up Successful!");
+          await axiosInstance.post("/users", body);
           navigate("/login");
+          toast.success("Sign Up Successful!");
         } catch (error) {
-          alert(_.first(error.response.data.message));
-          notifySlack(JSON.stringify(error, null, 2));
+          // alert(_.first(error.response.data.message));
+          toast.error(_.first(error.response.data.message));
+          notifySlack(JSON.stringify(error.response.data, null, 2));
         }
       } else {
-        alert(`Your password fails to match the following rule(s): ${rules} `);
+        // alert(`Your password fails to match the following rule(s): ${rules} `);
+        toast.warn(
+          `Your password fails to match the following rule(s): ${rules} `,
+        );
       }
     } else {
-      alert("Passwords don't match!");
+      // alert("Passwords don't match!");
+      toast.warn("Passwords don't match!");
     }
   }
 
   return (
     <>
-      <ToastContainer theme="dark" />
-      <Loader show={showLoader} />
       <div className="flex h-screen items-center justify-center ">
-        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
+        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
           <h2 className="mb-4 text-2xl font-bold">Sign Up</h2>
           <form
             className="w-sm flex flex-col items-center justify-center md:w-72"
             onSubmit={handleSignup}
           >
             <input
+              id="name"
               type="text"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Name"
               ref={nameRef}
               required
+              autoComplete="off"
             />
             <input
+              id="email"
               type="text"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Email"
               ref={emailRef}
               required
+              autoComplete="off"
             />
             <input
+              id="password"
               type="password"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Password"
               ref={passwordRef}
               required
+              autoComplete="off"
             />
             <input
+              id="confirmPassword"
               type="password"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Confirm Password"
               ref={confirmPasswordRef}
               required
+              autoComplete="off"
             />
             <button
               type="submit"
