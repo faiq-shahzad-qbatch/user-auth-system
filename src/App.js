@@ -10,6 +10,8 @@ const BackgroundImage = lazy(() => import("./components/BackgroundImage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignUpPage = lazy(() => import("./pages/SignUpPage"));
+const GoogleHomePage = lazy(() => import("./pages/GoogleHomePage"));
+const FacebookHomePage = lazy(() => import("./pages/FacebookHomePage"));
 
 function App() {
   const showLoader = useSelector((state) => state.loaderReducer.showLoader);
@@ -39,6 +41,8 @@ function App() {
                 }
               />
               <Route path="/home" element={<HomePage />} />
+              <Route path="/google" element={<GoogleHomePage />} />
+              <Route path="/facebook" element={<FacebookHomePage />} />
             </Routes>
           </Router>
         </ToastContext.Provider>

@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 
 import { ToastContext } from "../contexts/ToastContext";
 import _ from "lodash";
 import axiosInstance from "../utils/axiosUtils";
+import getInvalidPasswordMessage from "../utils/getInvalidPasswordMessage";
 import notifySlack from "../utils/notifySlack";
 import validatePassword from "../utils/validatePassword";
 
 function SignUpPage() {
+  const [showPassword, setShowPassword] = useState(false);
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -17,40 +19,44 @@ function SignUpPage() {
 
   const navigate = useNavigate();
 
+  function togglePasswordVisibility() {
+    setShowPassword(!showPassword);
+  }
+
   async function handleSignup(e) {
     e.preventDefault();
 
-    if (passwordRef.current.value === confirmPasswordRef.current.value) {
-      const rules = validatePassword(passwordRef.current.value);
-
-      console.log(rules);
-
-      if (_.isEmpty(rules)) {
-        const body = {
-          name: nameRef.current.value,
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-          avatar: "https://api.lorem.space/image/face?w=640&h=480&r=867",
-        };
-
-        try {
-          await axiosInstance.post("/users", body);
-          navigate("/login");
-          toast.success("Sign Up Successful!");
-        } catch (error) {
-          // alert(_.first(error.response.data.message));
-          toast.error(_.first(error.response.data.message));
-          notifySlack(JSON.stringify(error.response.data, null, 2));
-        }
-      } else {
-        // alert(`Your password fails to match the following rule(s): ${rules} `);
-        toast.warn(
-          `Your password fails to match the following rule(s): ${rules} `,
-        );
-      }
-    } else {
-      // alert("Passwords don't match!");
+    // Check if the password and confirm password fields match
+    if (passwordRef.current.value !== confirmPasswordRef.current.value) {
       toast.warn("Passwords don't match!");
+      return;
+    }
+
+    // Check if the password is valid
+    const rules = validatePassword(passwordRef.current.value);
+    if (!_.isEmpty(rules)) {
+      const message = getInvalidPasswordMessage(rules);
+      alert(
+        `Your password fails to pass the following rule(s):\n\n${message} `,
+      );
+      return;
+    }
+
+    // If all is good then create the new user
+    const body = {
+      name: nameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      avatar: "https://api.lorem.space/image/face?w=640&h=480&r=867",
+    };
+
+    try {
+      await axiosInstance.post("/users", body);
+      navigate("/login");
+      toast.success("Sign Up Successful!");
+    } catch (error) {
+      toast.error(_.first(error.response.data.message));
+      notifySlack(JSON.stringify(error.response.data, null, 2));
     }
   }
 
@@ -83,7 +89,7 @@ function SignUpPage() {
             />
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Password"
               ref={passwordRef}
@@ -92,21 +98,30 @@ function SignUpPage() {
             />
             <input
               id="confirmPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Confirm Password"
               ref={confirmPasswordRef}
               required
               autoComplete="off"
             />
+            <div className="flex items-center justify-start space-x-4 self-start">
+              <input
+                id="togglePassword"
+                type="checkbox"
+                value={showPassword}
+                onClick={togglePasswordVisibility}
+              />
+              <label htmlFor="togglePassword">Show Password</label>
+            </div>
             <button
               type="submit"
-              className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+              className="my-2 w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
             >
               Sign Up
             </button>
           </form>
-          <p className="mt-4">
+          <p className="my-2">
             Already a user?{" "}
             <Link to={"/login"} className=" text-blue-500 underline">
               Login

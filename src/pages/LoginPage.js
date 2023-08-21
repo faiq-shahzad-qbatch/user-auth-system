@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 
+import FacebookLogin from "react-facebook-login";
 import { GoogleLogin } from "@react-oauth/google";
 import { ToastContext } from "../contexts/ToastContext";
 import axiosInstance from "../utils/axiosUtils";
+import validator from "validator";
 
 function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -13,9 +16,20 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
+  function togglePasswordVisibility() {
+    setShowPassword(!showPassword);
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
 
+    // Check if the email is valid
+    if (!validator.isEmail(emailRef.current.value)) {
+      toast.warn("Email must be an email!");
+      return;
+    }
+
+    // If all is good proceed to login
     const body = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
@@ -32,9 +46,26 @@ function LoginPage() {
       navigate("/home");
       toast.success("Login Successful!");
     } catch (error) {
-      // alert(error.response.data.message);
       toast.error(error.response.data.message);
     }
+  }
+
+  function responseGoogle(response) {
+    navigate("/google", { state: { data: response } });
+    toast.success("Google Login Successful!");
+  }
+
+  function errorGoogle() {
+    toast.error("Google Login Failed!");
+  }
+
+  function responseFacebook(response) {
+    navigate("/facebook", { state: { data: response } });
+    toast.success("Facebook Login Successful!");
+  }
+
+  function errorFacebook() {
+    toast.error("Facebook Login Failed");
   }
 
   return (
@@ -57,32 +88,45 @@ function LoginPage() {
             />
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Password"
               ref={passwordRef}
               required
               autoComplete="off"
             />
+            <div className="flex items-center justify-start space-x-4 self-start">
+              <input
+                id="togglePassword"
+                type="checkbox"
+                value={showPassword}
+                onClick={togglePasswordVisibility}
+              />
+              <label htmlFor="togglePassword">Show Password</label>
+            </div>
             <button
               type="submit"
-              className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+              className="my-2 w-[90%] rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
             >
               Login
             </button>
           </form>
-          <div className="mt-4">
+          <div className="my-2">
             <GoogleLogin
-              onSuccess={(credentialResponse) => {
-                console.log(credentialResponse);
-                navigate("/home");
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
+              onSuccess={responseGoogle}
+              onError={errorGoogle}
+              useOneTap
             />
           </div>
-          <p className="mt-4">
+          <div className="my-2">
+            <FacebookLogin
+              appId="735205141747241"
+              fields="name,email"
+              callback={responseFacebook}
+              onFailure={errorFacebook}
+            />
+          </div>
+          <p className="my-2">
             Not a user?{" "}
             <Link to={"/"} className=" text-blue-500 underline">
               Sign Up
