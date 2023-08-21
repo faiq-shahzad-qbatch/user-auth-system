@@ -1,4 +1,5 @@
 import { SET_LOADER } from "./actionTypes";
+
 const { produce } = require("immer");
 
 const initialState = {

@@ -8,17 +8,24 @@ const INVALID_ACCESS_TOKEN =
 const INVALID_REFRESH_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjcyODAyMDI4fQ.P1_rB3hJ5afwiG4TWXLq6jOAcVJkvQZ2Z-ZZOnQ1dZw";
 
-let setInvalidAccessToken = true;
+let setInvalidAccessToken = false;
 let setInvalidRefreshToken = false;
-
 let retryCount = 0;
 
 const axiosInstance = axios.create({
   baseURL: "https://api.escuelajs.co/api/v1",
 });
 
+function isOnline() {
+  return navigator.onLine;
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
+    if (!isOnline()) {
+      return Promise.reject(new Error("Device is offline!"));
+    }
+
     let accessToken;
 
     if (setInvalidAccessToken) {

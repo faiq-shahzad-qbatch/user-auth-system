@@ -1,17 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 
 import { GoogleLogin } from "@react-oauth/google";
-import Loader from "../components/Loader";
-import { ToastContainer } from "react-toastify";
+import { ToastContext } from "../contexts/ToastContext";
 import axiosInstance from "../utils/axiosUtils";
-import { useSelector } from "react-redux";
 
 function LoginPage() {
-  const showLoader = useSelector((state) => state.loaderReducer.showLoader);
-
   const emailRef = useRef();
   const passwordRef = useRef();
+
+  const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -31,37 +29,40 @@ function LoginPage() {
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
 
-      // toast("Login Successful!");
       navigate("/home");
+      toast.success("Login Successful!");
     } catch (error) {
-      alert(error.response.data.message);
+      // alert(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   }
 
   return (
     <>
-      <ToastContainer theme="dark" />
-      <Loader show={showLoader} />
       <div className="flex h-screen items-center justify-center ">
-        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
+        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
           <h2 className="mb-4 text-2xl font-bold">Login</h2>
           <form
             className="w-sm flex flex-col items-center justify-center md:w-72"
             onSubmit={handleLogin}
           >
             <input
+              id="email"
               type="text"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Email"
               ref={emailRef}
               required
+              autoComplete="off"
             />
             <input
+              id="password"
               type="password"
               className="mb-4 w-full rounded-md bg-slate-300 p-2"
               placeholder="Password"
               ref={passwordRef}
               required
+              autoComplete="off"
             />
             <button
               type="submit"
