@@ -1,5 +1,4 @@
-const WEBHOOK_URL =
-  "https://hooks.slack.com/services/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";
+const WEBHOOK_URL = process.env.REACT_APP_WEBHOOK_URL;
 
 export default function nofifySlack(message) {
   fetch(WEBHOOK_URL, {

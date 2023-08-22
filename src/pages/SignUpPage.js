@@ -26,6 +26,13 @@ function SignUpPage() {
   async function handleSignup(e) {
     e.preventDefault();
 
+    // Check if the name is valid (only alphabets and spaces are allowed)
+    const regex = /^[a-zA-Z ]+$/;
+    if (!regex.test(nameRef.current.value)) {
+      toast.warn("Invalid name!");
+      return;
+    }
+
     // Check if the password and confirm password fields match
     if (passwordRef.current.value !== confirmPasswordRef.current.value) {
       toast.warn("Passwords don't match!");
@@ -44,7 +51,7 @@ function SignUpPage() {
 
     // If all is good then create the new user
     const body = {
-      name: nameRef.current.value,
+      name: nameRef.current.value.trim(),
       email: emailRef.current.value,
       password: passwordRef.current.value,
       avatar: "https://api.lorem.space/image/face?w=640&h=480&r=867",
@@ -63,7 +70,7 @@ function SignUpPage() {
   return (
     <>
       <div className="flex h-screen items-center justify-center ">
-        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
+        <div className="animate-fade-down w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
           <h2 className="mb-4 text-2xl font-bold">Sign Up</h2>
           <form
             className="w-sm flex flex-col items-center justify-center md:w-72"

@@ -27,8 +27,10 @@ function GoogleHomePage() {
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center space-y-4 bg-gradient-to-r from-slate-500 to-cyan-500">
-        <h1 className="font-mono text-4xl">Google Authentication Data</h1>
-        <div className="break-all">
+        <h1 className="animate-flip-up animate-delay-500 text-center font-mono text-4xl">
+          Google Authentication Data
+        </h1>
+        <div className="animate-flip-down animate-delay-500 w-2/3 overflow-y-auto break-all">
           <ReactJson src={data} iconStyle="square" theme="flat" />
         </div>
         <div className="flex items-center justify-evenly space-x-4">

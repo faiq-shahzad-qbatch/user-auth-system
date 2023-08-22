@@ -6,12 +6,29 @@ import Loader from "./components/Loader";
 import { ToastContext } from "./contexts/ToastContext";
 import { useSelector } from "react-redux";
 
-const BackgroundImage = lazy(() => import("./components/BackgroundImage"));
-const HomePage = lazy(() => import("./pages/HomePage"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const SignUpPage = lazy(() => import("./pages/SignUpPage"));
-const GoogleHomePage = lazy(() => import("./pages/GoogleHomePage"));
-const FacebookHomePage = lazy(() => import("./pages/FacebookHomePage"));
+const Container = lazy(() =>
+  import(/* webpackChunkName: "Container" */ "./components/Container"),
+);
+const BackgroundImage = lazy(() =>
+  import(
+    /* webpackChunkName: "BackgroundImage" */ "./components/BackgroundImage"
+  ),
+);
+const HomePage = lazy(() =>
+  import(/* webpackChunkName: "HomePage" */ "./pages/HomePage"),
+);
+const LoginPage = lazy(() =>
+  import(/* webpackChunkName: "LoginPage" */ "./pages/LoginPage"),
+);
+const SignUpPage = lazy(() =>
+  import(/* webpackChunkName: "SignUpPage" */ "./pages/SignUpPage"),
+);
+const GoogleHomePage = lazy(() =>
+  import(/* webpackChunkName: "GoogleHomePage" */ "./pages/GoogleHomePage"),
+);
+const FacebookHomePage = lazy(() =>
+  import(/* webpackChunkName: "FacebookHomePage" */ "./pages/FacebookHomePage"),
+);
 
 function App() {
   const showLoader = useSelector((state) => state.loaderReducer.showLoader);
@@ -40,9 +57,31 @@ function App() {
                   </BackgroundImage>
                 }
               />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/google" element={<GoogleHomePage />} />
-              <Route path="/facebook" element={<FacebookHomePage />} />
+
+              <Route
+                path="/home"
+                element={
+                  <Container>
+                    <HomePage />
+                  </Container>
+                }
+              />
+              <Route
+                path="/google"
+                element={
+                  <Container>
+                    <GoogleHomePage />
+                  </Container>
+                }
+              />
+              <Route
+                path="/facebook"
+                element={
+                  <Container>
+                    <FacebookHomePage />
+                  </Container>
+                }
+              />
             </Routes>
           </Router>
         </ToastContext.Provider>

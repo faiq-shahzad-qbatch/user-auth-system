@@ -25,7 +25,7 @@ function LoginPage() {
 
     // Check if the email is valid
     if (!validator.isEmail(emailRef.current.value)) {
-      toast.warn("Email must be an email!");
+      toast.warn("Invalid email!");
       return;
     }
 
@@ -71,7 +71,7 @@ function LoginPage() {
   return (
     <>
       <div className="flex h-screen items-center justify-center ">
-        <div className="w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
+        <div className="animate-fade-down w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
           <h2 className="mb-4 text-2xl font-bold">Login</h2>
           <form
             className="w-sm flex flex-col items-center justify-center md:w-72"
