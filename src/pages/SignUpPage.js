@@ -70,7 +70,7 @@ function SignUpPage() {
   return (
     <>
       <div className="flex h-screen items-center justify-center ">
-        <div className="animate-fade-down w-sm flex flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
+        <div className="w-sm flex animate-fade-down flex-col items-center justify-center rounded-lg bg-slate-300 bg-opacity-80 p-8 shadow-md">
           <h2 className="mb-4 text-2xl font-bold">Sign Up</h2>
           <form
             className="w-sm flex flex-col items-center justify-center md:w-72"
