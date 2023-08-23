@@ -6,18 +6,18 @@
 @tailwind components;
 @tailwind utilities; */
 
-@font-face {
+/* @font-face {
   font-family: "CustomFont";
   src: url("./fonts/Bricolage_Grotesque/BricolageGrotesque-VariableFont_opsz\,wdth\,wght.ttf")
     format("truetype");
-}
+} */
 
 body {
   margin: 0;
-  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif; */
-  font-family: "CustomFont";
+    sans-serif;
+  /* font-family: "CustomFont"; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
