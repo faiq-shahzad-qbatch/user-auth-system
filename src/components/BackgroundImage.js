@@ -1,7 +1,7 @@
 import React from "react";
 
 const BACKGROUND_IMAGE_URL =
-  "https://images.unsplash.com/photo-1690205785263-113863e05f1e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80";
+  "https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=2710&amp;q=80";
 
 const BackgroundImage = ({ children }) => {
   return (

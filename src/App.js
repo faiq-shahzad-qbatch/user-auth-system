@@ -35,7 +35,7 @@ function App() {
   return (
     <>
       <Loader show={showLoader} />
-      <ToastContainer theme="colored" />
+      <ToastContainer newestOnTop={true} theme="colored" />
       <Suspense fallback={<Loader show={true} />}>
         <ToastContext.Provider value={toast}>
           <Router>
