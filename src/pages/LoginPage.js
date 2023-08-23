@@ -2,13 +2,14 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Joi from "joi";
 import { ToastContext } from "../contexts/ToastContext";
 import axios from "axios";
 import axiosInstance from "../utils/axiosUtils";
 import playNotification from "../utils/playNotification";
 import { useGoogleLogin } from "@react-oauth/google";
+
+// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -92,15 +93,15 @@ function LoginPage() {
     onError: errorGoogle,
   });
 
-  function responseFacebook(response) {
-    navigate("/facebook", { state: { data: response } });
-    toast.success("Facebook Login Successful!");
-    playNotification();
-  }
+  // function responseFacebook(response) {
+  //   navigate("/facebook", { state: { data: response } });
+  //   toast.success("Facebook Login Successful!");
+  //   playNotification();
+  // }
 
-  function errorFacebook() {
-    toast.error("Facebook Login Failed");
-  }
+  // function errorFacebook() {
+  //   toast.error("Facebook Login Failed");
+  // }
 
   return (
     <>
@@ -176,7 +177,7 @@ function LoginPage() {
                   Login with Google
                 </button>
               </div>
-              <div>
+              {/* <div>
                 <FacebookLogin
                   appId="735205141747241"
                   fields="name,email,picture"
@@ -205,7 +206,7 @@ function LoginPage() {
                     </button>
                   )}
                 />
-              </div>
+              </div> */}
             </Form>
           </Formik>
 
