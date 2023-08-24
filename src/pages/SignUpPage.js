@@ -16,7 +16,7 @@ function SignUpPage() {
   const validationSchema = Joi.object({
     name: Joi.string()
       .max(20)
-      .regex(/^[a-zA-Z ]+$/)
+      .regex(/^[a-zA-Z ]+$/, "alphabets only")
       .required()
       .label("Name"),
     email: Joi.string()
@@ -62,6 +62,8 @@ function SignUpPage() {
   }
 
   async function handleSignup(values, { setSubmitting }) {
+    setSubmitting(true);
+
     // Check if the password is valid
     const rules = validatePassword(values.password);
     if (!_.isEmpty(rules)) {
@@ -77,7 +79,8 @@ function SignUpPage() {
       name: values.name.trim(),
       email: values.email,
       password: values.password,
-      avatar: "https://api.lorem.space/image/face?w=640&h=480&r=867",
+      avatar:
+        "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80",
     };
 
     try {
@@ -102,13 +105,14 @@ function SignUpPage() {
             validate={validate}
             onSubmit={handleSignup}
           >
-            <Form className="max-w-xs">
+            <Form className="w-52 md:w-72">
               <div className="mb-2">
                 <Field
                   name="name"
                   type="text"
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Name"
+                  autoComplete="off"
                 />
                 <ErrorMessage
                   name="name"
@@ -120,8 +124,9 @@ function SignUpPage() {
                 <Field
                   name="email"
                   type="email"
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Email"
+                  autoComplete="off"
                 />
                 <ErrorMessage
                   name="email"
@@ -133,7 +138,7 @@ function SignUpPage() {
                 <Field
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Password"
                 />
                 <ErrorMessage
@@ -146,7 +151,7 @@ function SignUpPage() {
                 <Field
                   name="confirmPassword"
                   type={showPassword ? "text" : "password"}
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Confirm Password"
                 />
                 <ErrorMessage
@@ -166,7 +171,7 @@ function SignUpPage() {
               </div>
               <button
                 type="submit"
-                className="my-2 w-52 rounded-md bg-pink-500 px-4 py-2 text-white hover:shadow-md md:w-72"
+                className="bg-indigo-custom my-2 w-full rounded-md px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
               >
                 Sign Up
               </button>
@@ -176,7 +181,7 @@ function SignUpPage() {
             Already a user?{" "}
             <Link
               to={"/login"}
-              className=" font-normal text-pink-500 underline"
+              className=" text-indigo-custom font-normal underline hover:text-indigo-500"
             >
               Login
             </Link>

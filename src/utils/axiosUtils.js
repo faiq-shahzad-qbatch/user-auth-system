@@ -2,7 +2,7 @@ import axios from "axios";
 import { setLoader } from "../redux/actionCreators";
 import store from "../redux/store";
 
-const MAX_RETRIES = 1;
+const MAX_RETRIES = parseInt(process.env.REACT_APP_MAX_RETRIES);
 const INVALID_ACCESS_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjc0NDk0MDI4fQ.kCak9sLJr74frSRVQp0_27BY4iBCgQSmoT3vQVWKzJg";
 const INVALID_REFRESH_TOKEN =
@@ -30,7 +30,9 @@ axiosInstance.interceptors.request.use(
 
     if (setInvalidAccessToken) {
       accessToken = INVALID_ACCESS_TOKEN;
-      setInvalidAccessToken = false;
+      if (retryCount > 0) {
+        setInvalidAccessToken = false;
+      }
     } else {
       accessToken = localStorage.getItem("access_token");
     }
@@ -76,6 +78,9 @@ axiosInstance.interceptors.response.use(
 
         localStorage.setItem("access_token", newAccessToken);
         localStorage.setItem("refresh_token", newRefreshToken);
+
+        // api return 401 for all invalid requests thus to prevent an infinite loop I have commented this line
+        // retryCount--;
 
         const originalRequest = error.config;
         return axiosInstance(originalRequest);

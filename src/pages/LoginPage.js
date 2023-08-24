@@ -2,14 +2,12 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 
+// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Joi from "joi";
 import { ToastContext } from "../contexts/ToastContext";
-import axios from "axios";
 import axiosInstance from "../utils/axiosUtils";
 import playNotification from "../utils/playNotification";
 import { useGoogleLogin } from "@react-oauth/google";
-
-// import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +45,8 @@ function LoginPage() {
   }
 
   async function handleLogin(values, { setSubmitting }) {
+    setSubmitting(true);
+
     const body = {
       email: values.email,
       password: values.password,
@@ -71,17 +71,10 @@ function LoginPage() {
   }
 
   async function responseGoogle(tokenResponse) {
-    try {
-      const userInfo = await axios.get(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
-      );
-      navigate("/google", { state: { data: userInfo.data } });
-      toast.success("Google Login Successful!");
-      playNotification();
-    } catch (error) {
-      console.error(error);
-    }
+    localStorage.setItem("access_token", tokenResponse.access_token);
+    navigate("/google");
+    toast.success("Google Login Successful!");
+    playNotification();
   }
 
   function errorGoogle() {
@@ -113,13 +106,14 @@ function LoginPage() {
             validate={validate}
             onSubmit={handleLogin}
           >
-            <Form className="max-w-xs">
+            <Form className="w-52 md:w-72">
               <div className="mb-2">
                 <Field
                   name="email"
                   type="email"
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Email"
+                  autoComplete="off"
                 />
                 <ErrorMessage
                   name="email"
@@ -131,7 +125,7 @@ function LoginPage() {
                 <Field
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  className="mb-2 w-full rounded-md bg-[#94A3B8] p-2 placeholder:text-gray-700"
+                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
                   placeholder="Password"
                 />
                 <ErrorMessage
@@ -151,30 +145,58 @@ function LoginPage() {
               </div>
               <button
                 type="submit"
-                className="my-2 w-52 rounded-md bg-pink-500 px-4 py-2 text-white hover:shadow-md md:w-72"
+                className="bg-indigo-custom my-2 w-full rounded-md px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
               >
                 Login
               </button>
               <div>
                 <button
                   type="button"
-                  className="dark:focus:ring-[#4285F4]/55 mb-2 flex w-52 flex-row items-center justify-center rounded-lg bg-[#4285F4] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#4285F4]/90 focus:outline-none focus:ring-4 focus:ring-[#4285F4]/50 md:w-72"
+                  className="dark:focus:ring-[#4285F4]/55 mb-2 flex w-full flex-row items-center justify-center space-x-2 rounded-lg bg-[#4285F4] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#4285F4]/90 focus:outline-none focus:ring-4 focus:ring-[#4285F4]/50"
                   onClick={googleLogin}
                 >
-                  <svg
-                    className="mr-2 h-4 w-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 18 19"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.842 18.083a8.8 8.8 0 0 1-8.65-8.948 8.841 8.841 0 0 1 8.8-8.652h.153a8.464 8.464 0 0 1 5.7 2.257l-2.193 2.038A5.27 5.27 0 0 0 9.09 3.4a5.882 5.882 0 0 0-.2 11.76h.124a5.091 5.091 0 0 0 5.248-4.057L14.3 11H9V8h8.34c.066.543.095 1.09.088 1.636-.086 5.053-3.463 8.449-8.4 8.449l-.186-.002Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Login with Google
+                  <div className="flex h-6 w-6 items-center justify-center rounded-sm bg-white">
+                    <svg
+                      viewBox="0 0 32 32"
+                      width="16"
+                      height="16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <path
+                          id="A"
+                          d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"
+                        />
+                      </defs>
+                      <clipPath id="B">
+                        <use xlinkHref="#A" />
+                      </clipPath>
+                      <g transform="matrix(.727273 0 0 .727273 -.954545 -1.45455)">
+                        <path
+                          d="M0 37V11l17 13z"
+                          clipPath="url(#B)"
+                          fill="#fbbc05"
+                        />
+                        <path
+                          d="M0 11l17 13 7-6.1L48 14V0H0z"
+                          clipPath="url(#B)"
+                          fill="#ea4335"
+                        />
+                        <path
+                          d="M0 37l30-23 7.9 1L48 0v48H0z"
+                          clipPath="url(#B)"
+                          fill="#34a853"
+                        />
+                        <path
+                          d="M48 48L17 24l-4-3 35-10z"
+                          clipPath="url(#B)"
+                          fill="#4285f4"
+                        />
+                      </g>
+                    </svg>
+                  </div>
+                  <span>Continue with Google</span>
                 </button>
               </div>
               {/* <div>
@@ -186,7 +208,7 @@ function LoginPage() {
                   render={(renderProps) => (
                     <button
                       type="button"
-                      className="dark:focus:ring-[#3b5998]/55 mb-2 flex w-52 flex-row items-center justify-center rounded-lg bg-[#3b5998] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#3b5998]/90 focus:outline-none focus:ring-4 focus:ring-[#3b5998]/50 md:w-72"
+                      className="dark:focus:ring-[#3b5998]/55 mb-2 flex w-full flex-row items-center justify-center rounded-lg bg-[#3b5998] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#3b5998]/90 focus:outline-none focus:ring-4 focus:ring-[#3b5998]/50"
                       onClick={renderProps.onClick}
                     >
                       <svg
@@ -202,7 +224,7 @@ function LoginPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      Login with Facebook
+                      Continue with Facebook
                     </button>
                   )}
                 />
@@ -212,8 +234,11 @@ function LoginPage() {
 
           <p className="my-2">
             Not a user?{" "}
-            <Link to={"/"} className=" font-normal text-pink-500 underline">
-              Login
+            <Link
+              to={"/"}
+              className="text-indigo-custom font-normal underline hover:text-indigo-500"
+            >
+              Sign In
             </Link>
           </p>
         </div>
