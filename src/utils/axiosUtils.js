@@ -14,6 +14,7 @@ let retryCount = 0;
 
 const axiosInstance = axios.create({
   baseURL: "https://api.escuelajs.co/api/v1",
+  timeout: 5000,
 });
 
 function isOnline() {
@@ -55,7 +56,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const statusCode = error.response.data.statusCode;
+    const statusCode = error?.response?.data?.statusCode;
 
     if (statusCode === 401 && retryCount < MAX_RETRIES) {
       retryCount++;

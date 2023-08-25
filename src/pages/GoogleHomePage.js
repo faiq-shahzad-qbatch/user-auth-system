@@ -20,7 +20,7 @@ function GoogleHomePage() {
       );
       setData(data);
     } catch (error) {
-      if (error.response?.status === 401) {
+      if (error?.response?.status === 401) {
         toast.error("Your session has expired please login again!");
         localStorage.clear();
         navigate("/login");
@@ -41,7 +41,7 @@ function GoogleHomePage() {
 
   return (
     <>
-      <div className="to-indigo-custom flex h-screen flex-col items-center justify-center space-y-4 bg-gradient-to-r from-gray-700 py-4">
+      <div className="flex h-screen flex-col items-center justify-center space-y-4 bg-gradient-to-r from-gray-700 to-indigo-custom py-4">
         <h1 className="animate-flip-up text-center font-mono text-4xl text-white animate-delay-500">
           Google Authentication Data
         </h1>
@@ -51,7 +51,7 @@ function GoogleHomePage() {
         <div className="flex items-center justify-evenly space-x-4">
           <button
             onClick={handleGoogleLogout}
-            className="bg-indigo-custom rounded-md px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
+            className="rounded-md bg-indigo-custom px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
           >
             Google Logout
           </button>

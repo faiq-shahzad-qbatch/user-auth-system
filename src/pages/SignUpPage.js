@@ -88,8 +88,12 @@ function SignUpPage() {
       navigate("/login");
       toast.success("Sign Up Successful!");
     } catch (error) {
-      toast.error(_.first(error.response.data.message));
-      notifySlack(JSON.stringify(error.response.data, null, 2));
+      const errorMessage = error?.response?.data?.message;
+      if (errorMessage) {
+        toast.error(_.first(error?.response?.data?.message));
+        notifySlack(JSON.stringify(error.response.data, null, 2));
+      }
+      toast.error("Sign Up Failed!");
     }
 
     setSubmitting(false);
@@ -105,83 +109,119 @@ function SignUpPage() {
             validate={validate}
             onSubmit={handleSignup}
           >
-            <Form className="w-52 md:w-72">
-              <div className="mb-2">
-                <Field
-                  name="name"
-                  type="text"
-                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
-                  placeholder="Name"
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="p"
-                  className="animate-pulse text-sm text-red-500"
-                />
-              </div>
-              <div className="mb-2">
-                <Field
-                  name="email"
-                  type="email"
-                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
-                  placeholder="Email"
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="p"
-                  className="animate-pulse text-sm text-red-500"
-                />
-              </div>
-              <div className="mb-2">
-                <Field
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
-                  placeholder="Password"
-                />
-                <ErrorMessage
-                  name="password"
-                  component="p"
-                  className="animate-pulse text-sm text-red-500"
-                />
-              </div>
-              <div className="mb-2">
-                <Field
-                  name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
-                  className="mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700"
-                  placeholder="Confirm Password"
-                />
-                <ErrorMessage
-                  name="confirmPassword"
-                  component="p"
-                  className="animate-pulse text-sm text-red-500"
-                />
-              </div>
-              <div className="flex items-center justify-start space-x-4 self-start">
-                <input
-                  id="togglePassword"
-                  type="checkbox"
-                  value={showPassword}
-                  onClick={togglePasswordVisibility}
-                />
-                <label htmlFor="togglePassword">Show Password</label>
-              </div>
-              <button
-                type="submit"
-                className="bg-indigo-custom my-2 w-full rounded-md px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
-              >
-                Sign Up
-              </button>
-            </Form>
+            {({ errors, touched }) => (
+              <Form className="w-52 md:w-72">
+                <div
+                  className={`${
+                    errors.name && touched.name ? "animate-pulse" : ""
+                  } mb-2`}
+                >
+                  <Field
+                    name="name"
+                    type="text"
+                    className={`${
+                      errors.name && touched.name
+                        ? "border-2 border-red-500"
+                        : ""
+                    } mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700`}
+                    placeholder="Name"
+                    autoComplete="off"
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="p"
+                    className="text-sm text-red-500"
+                  />
+                </div>
+                <div
+                  className={`${
+                    errors.email && touched.email ? "animate-pulse" : ""
+                  } mb-2`}
+                >
+                  <Field
+                    name="email"
+                    type="email"
+                    className={`${
+                      errors.email && touched.email
+                        ? "border-2 border-red-500"
+                        : ""
+                    } mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700`}
+                    placeholder="Email"
+                    autoComplete="off"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="p"
+                    className=" text-sm text-red-500"
+                  />
+                </div>
+                <div
+                  className={`${
+                    errors.password && touched.password ? "animate-pulse" : ""
+                  } mb-2`}
+                >
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className={`${
+                      errors.password && touched.password
+                        ? "border-2 border-red-500"
+                        : ""
+                    } mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700`}
+                    placeholder="Password"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="p"
+                    className="text-sm text-red-500"
+                  />
+                </div>
+                <div
+                  className={`${
+                    errors.confirmPassword && touched.confirmPassword
+                      ? "animate-pulse"
+                      : ""
+                  } mb-2`}
+                >
+                  <Field
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    className={`${
+                      errors.confirmPassword && touched.confirmPassword
+                        ? "border-2 border-red-500"
+                        : ""
+                    } mb-2 w-full rounded-md bg-gray-300 p-2 placeholder:text-gray-700`}
+                    placeholder="Confirm Password"
+                  />
+                  <ErrorMessage
+                    name="confirmPassword"
+                    component="p"
+                    className="text-sm text-red-500"
+                  />
+                </div>
+                <div className="flex items-center justify-start space-x-4 self-start">
+                  <input
+                    id="togglePassword"
+                    type="checkbox"
+                    value={showPassword}
+                    onClick={togglePasswordVisibility}
+                  />
+                  <label htmlFor="togglePassword">Show Password</label>
+                </div>
+                <button
+                  type="submit"
+                  className="my-2 w-full rounded-md bg-indigo-custom px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md"
+                >
+                  Sign Up
+                </button>
+              </Form>
+            )}
           </Formik>
           <p className="my-2">
             Already a user?{" "}
             <Link
               to={"/login"}
-              className=" text-indigo-custom font-normal underline hover:text-indigo-500"
+              className=" font-normal text-indigo-custom underline hover:text-indigo-500"
             >
               Login
             </Link>
