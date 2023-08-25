@@ -8,46 +8,78 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import ThemeSwitcher from "../components/ThemeSwitcher";
 import { ToastContext } from "../contexts/ToastContext";
 import _ from "lodash";
 import axiosInstance from "../utils/axiosUtils";
-import { useNavigate } from "react-router-dom";
 import userImage from "../media/user.png";
 
 function HomePage() {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [userProfile, setUserProfile] = useState({});
+  const [userData, setUserData] = useState({});
 
   const toast = useContext(ToastContext);
+
+  const location = useLocation();
 
   const navigate = useNavigate();
 
   const getUserDetails = useCallback(async () => {
-    try {
-      const response = await axiosInstance.get("auth/profile");
-      setUserProfile(response.data);
-    } catch (error) {
-      if (error.response?.data.statusCode === 401) {
-        toast.error("Your session has expired please login again!");
-        localStorage.clear();
-        navigate("/login");
-      }
+    const loginMethod = localStorage.getItem("loginMethod");
+
+    switch (loginMethod) {
+      case "google":
+        try {
+          const { data } = await axiosInstance.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+          );
+          setUserData(data);
+        } catch (error) {
+          const errorStatus = error?.response?.status;
+          if (errorStatus === 401) {
+            toast.error("Your session has expired please login again!");
+            localStorage.clear();
+            navigate("/login");
+          } else {
+            toast.error("Failed To Fetch User Data!");
+          }
+        }
+        break;
+      case "facebook":
+        setUserData(location?.state?.data);
+        break;
+      default:
+        try {
+          const { data } = await axiosInstance.get("auth/profile");
+          setUserData(data);
+        } catch (error) {
+          const errorStatus = error?.response?.data?.statusCode;
+          if (errorStatus === 401) {
+            toast.error("Your session has expired please login again!");
+            localStorage.clear();
+            navigate("/login");
+          } else {
+            toast.error("Failed to fetch user data!");
+          }
+        }
+        break;
     }
-  }, [toast, navigate]);
+  }, [location, toast, navigate]);
 
   useEffect(() => {
     getUserDetails();
   }, [getUserDetails]);
 
-  function toggleSidebar() {
-    setShowSidebar(!showSidebar);
-  }
-
   function handleLogout() {
     localStorage.clear();
     navigate("/login");
     toast.success("Logout Successful!");
+  }
+
+  function toggleSidebar() {
+    setShowSidebar(!showSidebar);
   }
 
   return (
@@ -56,11 +88,11 @@ function HomePage() {
         <aside
           className={`${
             showSidebar ? "translate-x-0" : "-translate-x-full"
-          } absolute inset-0 z-50 w-2/3 transform flex-col justify-start bg-gray-700 transition-transform duration-300 ease-in-out md:w-1/6`}
+          } absolute inset-0 z-50 w-2/3 transform flex-col justify-start bg-gray-700 transition-transform duration-300 ease-in-out dark:bg-gray-900 md:w-1/6`}
         >
           {showSidebar && (
             <div
-              className="bg-indigo-custom absolute left-[105%] mt-1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm text-white hover:bg-indigo-500"
+              className="absolute left-[105%] mt-1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm bg-indigo-custom text-white hover:bg-indigo-500"
               onClick={toggleSidebar}
             >
               <LeftSquareOutlined />
@@ -75,14 +107,14 @@ function HomePage() {
           <hr className="mx-2 border-white" />
           <nav>
             <ul className="flex flex-col justify-center space-y-4 p-2">
-              <li className="bg-indigo-custom flex cursor-pointer flex-row items-center justify-start space-x-2 rounded-md px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md">
+              <li className="flex cursor-pointer flex-row items-center justify-start space-x-2 rounded-md bg-indigo-custom px-4 py-2 text-white hover:bg-indigo-500 hover:shadow-md">
                 <UserOutlined />
                 <p>Profile</p>
               </li>
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-indigo-custom flex w-full cursor-pointer flex-row items-center justify-start space-x-2 rounded-md px-4 py-2 text-start text-white hover:bg-indigo-500 hover:shadow-md"
+                  className="flex w-full cursor-pointer flex-row items-center justify-start space-x-2 rounded-md bg-indigo-custom px-4 py-2 text-start text-white hover:bg-indigo-500 hover:shadow-md"
                 >
                   <LogoutOutlined />
                   <p>Logout</p>
@@ -92,11 +124,11 @@ function HomePage() {
           </nav>
         </aside>
 
-        <div className="flex flex-1 flex-col justify-center overflow-hidden bg-[#E2E8F0]">
-          <header className="flex h-14 items-center justify-start bg-gray-700 px-4 text-white">
+        <div className="flex flex-1 flex-col justify-center overflow-hidden bg-[#E2E8F0] dark:bg-gray-800">
+          <header className="flex h-14 items-center justify-start bg-gray-700 px-4 text-white dark:bg-gray-900">
             <div className="mr-4 flex items-center justify-center">
               <div
-                className=" bg-indigo-custom flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm text-white hover:bg-indigo-500"
+                className=" flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm bg-indigo-custom text-white hover:bg-indigo-500"
                 onClick={toggleSidebar}
               >
                 <RightSquareOutlined />
@@ -105,29 +137,31 @@ function HomePage() {
 
             <SearchOutlined />
             <input
+              name="searchBar"
               type="search"
               placeholder="Type to search..."
-              className="focus:ring-indigo-custom m-2 w-2/3 rounded-md bg-gray-700 p-2 focus:outline-none focus:ring"
+              className="m-2 w-2/3 rounded-md bg-gray-700 p-2 focus:outline-none focus:ring focus:ring-indigo-custom"
             />
             <div className="ml-auto flex items-center justify-center space-x-4">
+              <ThemeSwitcher />
               <LogoutOutlined
                 className="cursor-pointer hover:text-indigo-500"
                 onClick={handleLogout}
               />
               <SettingOutlined className="cursor-pointer hover:text-indigo-500" />
-              <div className="bg-indigo-custom flex h-10 w-10 cursor-pointer items-center justify-center rounded-full font-bold hover:animate-wiggle-more">
-                {_.first(userProfile.name)}
+              <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-indigo-custom font-bold hover:animate-wiggle-more">
+                {_.first(userData.name)}
               </div>
             </div>
           </header>
 
-          <main className="flex h-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
+          <main className="flex h-full flex-1 flex-col overflow-y-auto overflow-x-hidden dark:text-gray-200">
             <div className="mx-auto p-6">
               <div>
-                <h1 className=" text-4xl font-semibold">Profile</h1>
+                <h1 className="text-4xl font-semibold">Profile</h1>
               </div>
 
-              <div className="mt-4 overflow-hidden rounded-md bg-white">
+              <div className="mt-4 overflow-hidden rounded-md bg-white dark:bg-gray-700">
                 <img
                   src="https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=2710&amp;q=80"
                   alt="profile cover"
@@ -138,26 +172,22 @@ function HomePage() {
                   <div className="relative z-30 mx-auto -mt-20 h-32 w-32 ">
                     <img
                       src={userImage}
-                      // src={userProfile.avatar}
                       alt="profile"
-                      className="rounded-full"
+                      className="rounded-full border-2 border-indigo-custom "
                     />
                   </div>
 
                   <div className="mt-4">
                     <h3 className="mb-2 text-2xl font-semibold">
-                      {userProfile.name}
+                      {userData.name}
                     </h3>
-                    <p className="font-medium text-gray-700">
-                      {_.upperFirst(userProfile.role)}
-                    </p>
 
-                    <div className="bg-indigo-custom mx-auto my-4 grid max-w-sm grid-cols-1 rounded-md text-white md:grid-cols-3">
-                      <div className="my-2 flex border-spacing-2 flex-row items-center justify-center space-x-2 md:border-r-[1px] md:border-white">
+                    <div className="mx-auto my-4 grid max-w-sm grid-cols-1 rounded-md bg-indigo-custom text-white md:grid-cols-3">
+                      <div className="mx-4 my-2 flex border-spacing-2 flex-row items-center justify-center space-x-2 border-b-[1px] md:mx-0 md:border-b-0 md:border-r-[1px] md:border-white">
                         <span className="text-lg font-bold">259</span>
                         <span className="text-sm">Posts</span>
                       </div>
-                      <div className="my-2 flex border-spacing-2 flex-row items-center justify-center space-x-2 md:border-r-[1px] md:border-white">
+                      <div className="mx-4 my-2 flex border-spacing-2 flex-row items-center justify-center space-x-2 border-b-[1px] md:mx-0 md:border-b-0 md:border-r-[1px] md:border-white">
                         <span className="text-lg font-bold">129K</span>
                         <span className="text-sm">Follower</span>
                       </div>
@@ -184,7 +214,7 @@ function HomePage() {
                       <div className="flex flex-row items-center justify-center space-x-2">
                         <p>
                           <svg
-                            className="hover:fill-indigo-custom cursor-pointer fill-current"
+                            className="cursor-pointer fill-current hover:fill-indigo-custom"
                             width="22"
                             height="22"
                             viewBox="0 0 22 22"
@@ -210,7 +240,7 @@ function HomePage() {
                         </p>
                         <p>
                           <svg
-                            className="hover:fill-indigo-custom cursor-pointer fill-current"
+                            className="cursor-pointer fill-current hover:fill-indigo-custom"
                             width="23"
                             height="22"
                             viewBox="0 0 23 22"
@@ -237,7 +267,7 @@ function HomePage() {
                         </p>
                         <p>
                           <svg
-                            className="hover:fill-indigo-custom cursor-pointer fill-current"
+                            className="cursor-pointer fill-current hover:fill-indigo-custom"
                             width="23"
                             height="22"
                             viewBox="0 0 23 22"
@@ -264,7 +294,7 @@ function HomePage() {
                         </p>
                         <p>
                           <svg
-                            className="hover:fill-indigo-custom cursor-pointer fill-current"
+                            className="cursor-pointer fill-current hover:fill-indigo-custom"
                             width="22"
                             height="22"
                             viewBox="0 0 22 22"
@@ -290,7 +320,7 @@ function HomePage() {
                         </p>
                         <p>
                           <svg
-                            className="hover:fill-indigo-custom cursor-pointer fill-current"
+                            className="cursor-pointer fill-current hover:fill-indigo-custom"
                             width="23"
                             height="22"
                             viewBox="0 0 23 22"
