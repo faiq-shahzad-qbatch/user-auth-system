@@ -44,6 +44,7 @@
   "scripts": {
     "start": "HTTPS=true SSL_CRT_FILE=localhost.crt SSL_KEY_FILE=localhost.key react-scripts start",
     "windows start": "set HTTPS=true && set SSL_CRT_FILE=localhost.crt && set SSL_KEY_FILE=localhost.key && react-scripts start",
+    "http start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -71,6 +72,7 @@
     ]
   },
   "devDependencies": {
+    "@svgr/plugin-prettier": "^8.1.0",
     "prettier": "^3.0.2",
     "prettier-plugin-tailwindcss": "^0.5.3",
     "react-app-rewired": "^2.2.1",

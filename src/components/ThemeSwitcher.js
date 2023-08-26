@@ -3,27 +3,28 @@ import React, { useEffect, useState } from "react";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 function ThemeSwitcher() {
-  // const [theme, setTheme] = useState(
-  //   window.matchMedia("(prefers-color-scheme: dark)").matches
-  //     ? "dark"
-  //     : "light",
-  // );
-  // const [darkMode, setDarkMode] = useState(
-  //   window.matchMedia("(prefers-color-scheme: dark)").matches ? true : false,
-  // );
-
   const [theme, setTheme] = useState(
-    localStorage.theme === "dark" ? "dark" : "light",
+    localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ? "dark"
+      : "light",
   );
   const [darkMode, setDarkMode] = useState(
-    localStorage.theme === "dark" ? true : false,
+    localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ? true
+      : false,
   );
 
   useEffect(() => {
-    localStorage.theme = theme;
-
     const root = window.document.documentElement;
-    if (localStorage.theme === "dark") {
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
@@ -34,8 +35,10 @@ function ThemeSwitcher() {
     setDarkMode(checked);
 
     if (checked) {
+      localStorage.theme = "dark";
       setTheme("dark");
     } else {
+      localStorage.theme = "light";
       setTheme("light");
     }
   }
