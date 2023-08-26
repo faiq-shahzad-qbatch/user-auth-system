@@ -11,7 +11,7 @@ const BackgroundImage = ({ children }) => {
         backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
       }}
     >
-      <div className="fixed inset-0 h-screen w-screen bg-black opacity-50"></div>
+      <div className="fixed inset-0 h-screen w-screen bg-black opacity-0 dark:opacity-50"></div>
       <div className="relative flex h-screen w-screen items-center justify-center">
         {children}
       </div>
