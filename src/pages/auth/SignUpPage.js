@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 import AuthModal from "../../components/forms/AuthModal";
 import BackgroundImage from "../../components/BackgroundImage";
@@ -8,16 +8,17 @@ import Joi from "joi";
 import RedirectionLink from "../../components/forms/RedirectionLink";
 import ShowPasswordCheckBox from "../../components/forms/ShowPasswordCheckBox";
 import SubmitButton from "../../components/forms/SubmitButton";
-import { ToastContext } from "../../contexts/ToastContext";
 import _ from "lodash";
-import axiosInstance from "../../utils/axiosUtils";
 import getInvalidPasswordMessage from "../../utils/getInvalidPasswordMessage";
-import notifySlack from "../../utils/notifySlack";
+import { signUpUser } from "../../redux/users/actionCreator";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import validatePassword from "../../utils/validatePassword";
 
 function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const dispatch = useDispatch();
 
   const validationSchema = Joi.object({
     name: Joi.string()
@@ -26,10 +27,10 @@ function SignUpPage() {
       .required()
       .label("Name"),
     email: Joi.string()
-      .email({ tlds: { allow: false } })
+      .email({ tlds: { allow: ["com", "net", "org", "io", "edu", "pk"] } })
       .required()
       .label("Email"),
-    password: Joi.string().min(8).max(20).required().label("Password"),
+    password: Joi.string().min(8).max(50).required().label("Password"),
     confirmPassword: Joi.string()
       .valid(Joi.ref("password"))
       .label("Confirm Password")
@@ -53,8 +54,6 @@ function SignUpPage() {
     password: "",
     confirmPassword: "",
   };
-
-  const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -84,18 +83,7 @@ function SignUpPage() {
         "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80",
     };
 
-    try {
-      await axiosInstance.post("/users", body);
-      navigate("/login");
-      toast.success("Sign Up Successful!");
-    } catch (error) {
-      const errorMessage = error?.response?.data?.message;
-      if (errorMessage) {
-        toast.error(_.first(error?.response?.data?.message));
-        notifySlack(JSON.stringify(error.response.data, null, 2));
-      }
-      toast.error("Sign Up Failed!");
-    }
+    dispatch(signUpUser(body, navigate));
 
     setSubmitting(false);
   }

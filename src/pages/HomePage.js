@@ -8,6 +8,11 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import {
+  fetchGoogleUserData,
+  fetchUserData,
+} from "../redux/users/actionCreator";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as DribbleLogo } from "../assets/svgs/dribble-logo.svg";
@@ -18,16 +23,18 @@ import ThemeSwitcher from "../components/ThemeSwitcher";
 import { ToastContext } from "../contexts/ToastContext";
 import { ReactComponent as TwitterLogo } from "../assets/svgs/twitter-logo.svg";
 import _ from "lodash";
-import axiosInstance from "../utils/axiosUtils";
 import userImage from "../media/user.png";
 
 function HomePage() {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [userData, setUserData] = useState({});
-
-  const toast = useContext(ToastContext);
 
   const location = useLocation();
+
+  const userData = useSelector((state) => state.userReducer.user);
+
+  const dispatch = useDispatch();
+
+  const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -36,42 +43,16 @@ function HomePage() {
 
     switch (loginMethod) {
       case "google":
-        try {
-          const { data } = await axiosInstance.get(
-            "https://www.googleapis.com/oauth2/v3/userinfo",
-          );
-          setUserData(data);
-        } catch (error) {
-          const errorStatus = error?.response?.status;
-          if (errorStatus === 401) {
-            toast.error("Your session has expired please login again!");
-            localStorage.clear();
-            navigate("/login");
-          } else {
-            toast.error("Failed To Fetch User Data!");
-          }
-        }
+        dispatch(fetchGoogleUserData(navigate));
         break;
       case "facebook":
-        setUserData(location?.state?.data);
+        console.log(location?.state?.data);
         break;
       default:
-        try {
-          const { data } = await axiosInstance.get("auth/profile");
-          setUserData(data);
-        } catch (error) {
-          const errorStatus = error?.response?.data?.statusCode;
-          if (errorStatus === 401) {
-            toast.error("Your session has expired please login again!");
-            localStorage.clear();
-            navigate("/login");
-          } else {
-            toast.error("Failed to fetch user data!");
-          }
-        }
+        dispatch(fetchUserData(navigate));
         break;
     }
-  }, [location, toast, navigate]);
+  }, [dispatch, navigate, location]);
 
   useEffect(() => {
     getUserDetails();
@@ -160,7 +141,7 @@ function HomePage() {
             />
             <SettingOutlined className="cursor-pointer hover:text-indigo-500" />
             <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-indigo-custom font-bold hover:animate-wiggle-more hover:animate-infinite">
-              {_.first(userData.name)}
+              {_.first(userData.name || userData.firstName)}
             </div>
           </div>
         </header>
@@ -188,7 +169,9 @@ function HomePage() {
                 </div>
 
                 <div className="mt-4">
-                  <h3 className="text-2xl font-semibold">{userData.name}</h3>
+                  <h3 className="text-2xl font-semibold">
+                    {userData.name || userData.firstName}
+                  </h3>
 
                   <div className="mx-auto my-4 grid max-w-sm grid-cols-1 rounded-md bg-indigo-custom text-white md:grid-cols-3">
                     <div className="mx-4 my-2 flex border-spacing-2 flex-row items-center justify-center space-x-2 border-b-[1px] md:mx-0 md:border-b-0 md:border-r-[1px] md:border-white">

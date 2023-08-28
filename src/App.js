@@ -1,9 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 
+import Notify from "./components/Notify";
 import Spinner from "./components/Spinner";
 import { ToastContext } from "./contexts/ToastContext";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
 const HomePage = lazy(() =>
@@ -17,15 +18,11 @@ const SignUpPage = lazy(() =>
 );
 
 function App() {
-  const showLoader = useSelector((state) => state.loaderReducer.showLoader);
+  const showLoader = useSelector((state) => state.userReducer.loading);
   return (
     <>
       <Spinner show={showLoader} />
-      <ToastContainer
-        position="bottom-right"
-        newestOnTop={true}
-        theme="colored"
-      />
+      <Notify />
       <ToastContext.Provider value={toast}>
         <Suspense fallback={<Spinner />}>
           <Router>

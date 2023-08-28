@@ -5,7 +5,7 @@ export default function getInvalidPasswordMessage(rules) {
         case "min":
           return message.concat("- Minimum length must be 8 characters\n");
         case "max":
-          return message.concat("- Maximum length should be 100 characters\n");
+          return message.concat("- Maximum length should be 50 characters\n");
         case "uppercase":
           return message.concat("- Must have at least one uppercase letter\n");
         case "lowercase":

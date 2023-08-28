@@ -9,7 +9,7 @@ function GoogleLoginButton({ googleLogin }) {
         onClick={googleLogin}
       >
         <div className="flex h-6 w-6 items-center justify-center rounded-sm bg-white">
-          <GoogleLogo />
+          <GoogleLogo className="h-4 w-4" />
         </div>
         <span>Continue with Google</span>
       </button>
