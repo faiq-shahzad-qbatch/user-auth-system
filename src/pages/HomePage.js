@@ -7,34 +7,34 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   fetchGoogleUserData,
   fetchUserData,
+  logout,
 } from "../redux/users/actionCreator";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
 
 import { ReactComponent as DribbleLogo } from "../assets/svgs/dribble-logo.svg";
 import { ReactComponent as FacebookLogo } from "../assets/svgs/facebook-logo.svg";
 import { ReactComponent as GitHubLogo } from "../assets/svgs/github-logo.svg";
 import { ReactComponent as LinkedInLogo } from "../assets/svgs/linkedin-logo.svg";
 import ThemeSwitcher from "../components/ThemeSwitcher";
-import { ToastContext } from "../contexts/ToastContext";
 import { ReactComponent as TwitterLogo } from "../assets/svgs/twitter-logo.svg";
 import _ from "lodash";
+import { useNavigate } from "react-router-dom";
 import userImage from "../media/user.png";
+
+// import { ToastContext } from "../contexts/ToastContext";
 
 function HomePage() {
   const [showSidebar, setShowSidebar] = useState(false);
-
-  const location = useLocation();
 
   const userData = useSelector((state) => state.userReducer.user);
 
   const dispatch = useDispatch();
 
-  const toast = useContext(ToastContext);
+  // const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -46,22 +46,19 @@ function HomePage() {
         dispatch(fetchGoogleUserData(navigate));
         break;
       case "facebook":
-        console.log(location?.state?.data);
         break;
       default:
         dispatch(fetchUserData(navigate));
         break;
     }
-  }, [dispatch, navigate, location]);
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     getUserDetails();
   }, [getUserDetails]);
 
   function handleLogout() {
-    localStorage.clear();
-    navigate("/login");
-    toast.success("Logout Successful!");
+    dispatch(logout(navigate));
   }
 
   function toggleSidebar() {
