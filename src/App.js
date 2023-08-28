@@ -26,8 +26,8 @@ function App() {
         newestOnTop={true}
         theme="colored"
       />
-      <Suspense fallback={<Spinner />}>
-        <ToastContext.Provider value={toast}>
+      <ToastContext.Provider value={toast}>
+        <Suspense fallback={<Spinner />}>
           <Router>
             <Routes>
               <Route exact path="/" element={<SignUpPage />} />
@@ -35,8 +35,8 @@ function App() {
               <Route path="/home" element={<HomePage />} />
             </Routes>
           </Router>
-        </ToastContext.Provider>
-      </Suspense>
+        </Suspense>
+      </ToastContext.Provider>
     </>
   );
 }

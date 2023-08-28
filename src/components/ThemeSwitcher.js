@@ -44,12 +44,14 @@ function ThemeSwitcher() {
   }
 
   return (
-    <DarkModeSwitch
-      checked={darkMode}
-      onChange={toggleDarkMode}
-      sunColor="#111828"
-      moonColor="#F3F4F6"
-    />
+    <>
+      <DarkModeSwitch
+        checked={darkMode}
+        onChange={toggleDarkMode}
+        sunColor="#111828"
+        moonColor="#F3F4F6"
+      />
+    </>
   );
 }
 
