@@ -1,21 +1,28 @@
 import { Form, Formik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 import AuthModal from "../../components/forms/AuthModal";
 import BackgroundImage from "../../components/BackgroundImage";
-import FacebookLoginButton from "../../components/buttons/FacebookLoginButton";
 import FormikInput from "../../components/forms/FormikInput";
-import GoogleLoginButton from "../../components/buttons/GoogleLoginButton";
 import Joi from "joi";
 import RedirectionLink from "../../components/forms/RedirectionLink";
 import ShowPasswordCheckBox from "../../components/forms/ShowPasswordCheckBox";
 import SubmitButton from "../../components/forms/SubmitButton";
-import { ToastContext } from "../../contexts/ToastContext";
 import { loginUser } from "../../redux/users/actionCreator";
-import playNotification from "../../utils/playNotification";
 import { useDispatch } from "react-redux";
-import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+
+// import { ToastContext } from "../../contexts/ToastContext";
+
+// import { setFacebookUserData } from "../../redux/users/actionCreator";
+
+// import FacebookLoginButton from "../../components/buttons/FacebookLoginButton";
+
+// import GoogleLoginButton from "../../components/buttons/GoogleLoginButton";
+
+// import playNotification from "../../utils/playNotification";
+
+// import { useGoogleLogin } from "@react-oauth/google";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,10 +30,7 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const validationSchema = Joi.object({
-    email: Joi.string()
-      .email({ tlds: { allow: ["com", "net", "org", "io", "edu", "pk"] } })
-      .required()
-      .label("Email"),
+    username: Joi.string().alphanum().max(20).required().label("Username"),
     password: Joi.string().min(8).max(50).required().label("Password"),
   });
 
@@ -42,11 +46,11 @@ function LoginPage() {
   }
 
   const initialValues = {
-    email: "",
+    username: "",
     password: "",
   };
 
-  const toast = useContext(ToastContext);
+  // const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -58,7 +62,7 @@ function LoginPage() {
     setSubmitting(true);
 
     const body = {
-      email: values.email,
+      username: values.username,
       password: values.password,
     };
 
@@ -67,33 +71,34 @@ function LoginPage() {
     setSubmitting(false);
   }
 
-  async function responseGoogle(tokenResponse) {
-    localStorage.setItem("access_token", tokenResponse.access_token);
-    localStorage.setItem("loginMethod", "google");
-    navigate("/home");
-    toast.success("Google Login Successful!");
-    playNotification();
-  }
+  // async function responseGoogle(tokenResponse) {
+  //   localStorage.setItem("access_token", tokenResponse.access_token);
+  //   localStorage.setItem("loginMethod", "google");
+  //   navigate("/home");
+  //   toast.success("Google Login Successful!");
+  //   playNotification();
+  // }
 
-  function errorGoogle() {
-    toast.error("Google Login Failed!");
-  }
+  // function errorGoogle() {
+  //   toast.error("Google Login Failed!");
+  // }
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: responseGoogle,
-    onError: errorGoogle,
-  });
+  // const googleLogin = useGoogleLogin({
+  //   onSuccess: responseGoogle,
+  //   onError: errorGoogle,
+  // });
 
-  function responseFacebook(response) {
-    localStorage.setItem("loginMethod", "facebook");
-    navigate("/home", { state: { data: response } });
-    toast.success("Facebook Login Successful!");
-    playNotification();
-  }
+  // function responseFacebook(response) {
+  //   dispatch(setFacebookUserData(response));
+  //   localStorage.setItem("loginMethod", "facebook");
+  //   navigate("/home");
+  //   toast.success("Facebook Login Successful!");
+  //   playNotification();
+  // }
 
-  function errorFacebook() {
-    toast.error("Facebook Login Failed");
-  }
+  // function errorFacebook() {
+  //   toast.error("Facebook Login Failed");
+  // }
 
   return (
     <>
@@ -107,11 +112,11 @@ function LoginPage() {
             {({ errors, touched }) => (
               <Form className="w-52 md:w-72">
                 <FormikInput
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  error={errors.email}
-                  touched={touched.email}
+                  name="username"
+                  type="text"
+                  placeholder="Username"
+                  error={errors.username}
+                  touched={touched.username}
                 />
                 <FormikInput
                   name="password"
@@ -125,11 +130,11 @@ function LoginPage() {
                   togglePasswordVisibility={togglePasswordVisibility}
                 />
                 <SubmitButton text={"Login"} />
-                <GoogleLoginButton googleLogin={googleLogin} />
+                {/* <GoogleLoginButton googleLogin={googleLogin} />
                 <FacebookLoginButton
                   responseFacebook={responseFacebook}
                   errorFacebook={errorFacebook}
-                />
+                /> */}
               </Form>
             )}
           </Formik>

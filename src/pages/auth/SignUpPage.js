@@ -21,15 +21,17 @@ function SignUpPage() {
   const dispatch = useDispatch();
 
   const validationSchema = Joi.object({
-    name: Joi.string()
+    firstName: Joi.string()
       .max(20)
       .regex(/^[a-zA-Z ]+$/, "alphabets only")
       .required()
-      .label("Name"),
-    email: Joi.string()
-      .email({ tlds: { allow: ["com", "net", "org", "io", "edu", "pk"] } })
+      .label("First Name"),
+    lastName: Joi.string()
+      .max(20)
+      .regex(/^[a-zA-Z ]+$/, "alphabets only")
       .required()
-      .label("Email"),
+      .label("Last Name"),
+    username: Joi.string().alphanum().max(20).required().label("Username"),
     password: Joi.string().min(8).max(50).required().label("Password"),
     confirmPassword: Joi.string()
       .valid(Joi.ref("password"))
@@ -49,8 +51,9 @@ function SignUpPage() {
   }
 
   const initialValues = {
-    name: "",
-    email: "",
+    firstName: "",
+    lastName: "",
+    username: "",
     password: "",
     confirmPassword: "",
   };
@@ -76,8 +79,9 @@ function SignUpPage() {
 
     // If all is good then create the new user
     const body = {
-      name: values.name.trim(),
-      email: values.email,
+      firstName: values.firstName.trim(),
+      lastName: values.lastName.trim(),
+      username: values.username,
       password: values.password,
       avatar:
         "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80",
@@ -98,20 +102,30 @@ function SignUpPage() {
             onSubmit={handleSignup}
           >
             {({ errors, touched }) => (
-              <Form className="w-52 md:w-72">
+              <Form className="w-52 md:w-96">
+                <div className="item-center flex min-w-full justify-between space-x-2">
+                  <FormikInput
+                    name="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    error={errors.firstName}
+                    touched={touched.firstName}
+                  />
+                  <FormikInput
+                    name="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    error={errors.lastName}
+                    touched={touched.lastName}
+                  />
+                </div>
+
                 <FormikInput
-                  name="name"
+                  name="username"
                   type="text"
-                  placeholder="Name"
-                  error={errors.name}
-                  touched={touched.name}
-                />
-                <FormikInput
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  error={errors.email}
-                  touched={touched.email}
+                  placeholder="Username"
+                  error={errors.username}
+                  touched={touched.username}
                 />
                 <FormikInput
                   name="password"

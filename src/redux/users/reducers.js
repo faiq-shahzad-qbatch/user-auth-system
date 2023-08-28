@@ -52,19 +52,6 @@ const userReducer = (state = initialState, { type, payload }) => {
         draftState.success = "Successfully fetched user data!";
       });
 
-    case actions.LOGIN_GOOGLE_USER_BEGIN:
-      return produce(state, (draftState) => {
-        draftState.loading = true;
-        draftState.success = null;
-        draftState.error = null;
-      });
-
-    case actions.LOGIN_GOOGLE_USER_SUCCESS:
-      return produce(state, (draftState) => {
-        draftState.loading = false;
-        draftState.success = "Google login successful!";
-      });
-
     case actions.FETCH_GOOGLE_USER_DATA_BEGIN:
       return produce(state, (draftState) => {
         draftState.loading = true;
@@ -77,6 +64,26 @@ const userReducer = (state = initialState, { type, payload }) => {
         draftState.user = payload;
         draftState.loading = false;
         draftState.success = "Successfully fetched google user data!";
+      });
+
+    case actions.SET_FACEBOOK_USER_DATA:
+      return produce(state, (draftState) => {
+        draftState.user = payload;
+        draftState.success = "Successfully set facebook user data!";
+      });
+
+    case actions.LOGOUT_BEGIN:
+      return produce(state, (draftState) => {
+        draftState.loading = true;
+        draftState.success = null;
+        draftState.error = null;
+      });
+
+    case actions.LOGOUT_SUCCESS:
+      return produce(state, (draftState) => {
+        draftState.user = payload;
+        draftState.loading = false;
+        draftState.success = "Logout successful";
       });
 
     case actions.API_ERROR:

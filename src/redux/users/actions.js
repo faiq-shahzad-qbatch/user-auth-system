@@ -8,11 +8,13 @@ const actions = {
   FETCH_USER_DATA_BEGIN: "FETCH_USER_DATA_BEGIN",
   FETCH_USER_DATA_SUCCESS: "FETCH_USER_DATA_SUCCESS",
 
-  LOGIN_GOOGLE_USER_BEGIN: "LOGIN_GOOGLE_USER_BEGIN",
-  LOGIN_GOOGLE_USER_SUCCESS: "LOGIN_GOOGLE_USER_SUCCESS",
-
   FETCH_GOOGLE_USER_DATA_BEGIN: "FETCH_GOOGLE_USER_DATA_BEGIN",
   FETCH_GOOGLE_USER_DATA_SUCCESS: "FETCH_GOOGLE_USER_DATA_SUCCESS",
+
+  SET_FACEBOOK_USER_DATA: "SET_FACEBOOK_USER_DATA",
+
+  LOGOUT_BEGIN: "LOGOUT_BEGIN",
+  LOGOUT_SUCCESS: "LOGOUT_SUCCESS",
 
   API_ERROR: "API_ERROR",
 
@@ -54,18 +56,6 @@ const actions = {
     };
   },
 
-  loginGoogleUserBegin: () => {
-    return {
-      type: actions.LOGIN_GOOGLE_USER_BEGIN,
-    };
-  },
-
-  loginGoogleUserSuccess: () => {
-    return {
-      type: actions.LOGIN_GOOGLE_USER_BEGIN,
-    };
-  },
-
   fetchGoogleUserDataBegin: () => {
     return {
       type: actions.FETCH_GOOGLE_USER_DATA_BEGIN,
@@ -75,6 +65,26 @@ const actions = {
   fetchGoogleUserDataSuccess: (data) => {
     return {
       type: actions.FETCH_GOOGLE_USER_DATA_SUCCESS,
+      payload: data,
+    };
+  },
+
+  setFacebookUserData: (data) => {
+    return {
+      type: actions.SET_FACEBOOK_USER_DATA,
+      payload: data,
+    };
+  },
+
+  logoutBegin: () => {
+    return {
+      type: actions.LOGOUT_BEGIN,
+    };
+  },
+
+  logoutSuccess: (data) => {
+    return {
+      type: actions.LOGOUT_SUCCESS,
       payload: data,
     };
   },
