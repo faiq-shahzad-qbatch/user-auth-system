@@ -1,17 +1,15 @@
 import axios from "axios";
 
 const MAX_RETRIES = parseInt(process.env.REACT_APP_MAX_RETRIES);
-const INVALID_ACCESS_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjc0NDk0MDI4fQ.kCak9sLJr74frSRVQp0_27BY4iBCgQSmoT3vQVWKzJg";
-const INVALID_REFRESH_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjcyODAyMDI4fQ.P1_rB3hJ5afwiG4TWXLq6jOAcVJkvQZ2Z-ZZOnQ1dZw";
+const INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN";
+const INVALID_REFRESH_TOKEN = "INVALID_REFRESH_TOKEN";
 
 let setInvalidAccessToken = false;
 let setInvalidRefreshToken = false;
 let retryCount = 0;
 
 const axiosInstance = axios.create({
-  baseURL: "https://api.escuelajs.co/api/v1",
+  baseURL: "https://dummyjson.com/",
   timeout: 5000,
 });
 

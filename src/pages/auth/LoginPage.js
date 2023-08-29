@@ -13,6 +13,7 @@ import SubmitButton from "../../components/forms/SubmitButton";
 import { ToastContext } from "../../contexts/ToastContext";
 import { loginUser } from "../../redux/users/actionCreator";
 import playNotification from "../../utils/playNotification";
+import { setFacebookUserData } from "../../redux/users/actionCreator";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
@@ -23,10 +24,7 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const validationSchema = Joi.object({
-    email: Joi.string()
-      .email({ tlds: { allow: ["com", "net", "org", "io", "edu", "pk"] } })
-      .required()
-      .label("Email"),
+    username: Joi.string().alphanum().max(20).required().label("Username"),
     password: Joi.string().min(8).max(50).required().label("Password"),
   });
 
@@ -42,7 +40,7 @@ function LoginPage() {
   }
 
   const initialValues = {
-    email: "",
+    username: "",
     password: "",
   };
 
@@ -58,7 +56,7 @@ function LoginPage() {
     setSubmitting(true);
 
     const body = {
-      email: values.email,
+      username: values.username,
       password: values.password,
     };
 
@@ -85,8 +83,9 @@ function LoginPage() {
   });
 
   function responseFacebook(response) {
+    dispatch(setFacebookUserData(response));
     localStorage.setItem("loginMethod", "facebook");
-    navigate("/home", { state: { data: response } });
+    navigate("/home");
     toast.success("Facebook Login Successful!");
     playNotification();
   }
@@ -107,11 +106,11 @@ function LoginPage() {
             {({ errors, touched }) => (
               <Form className="w-52 md:w-72">
                 <FormikInput
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  error={errors.email}
-                  touched={touched.email}
+                  name="username"
+                  type="text"
+                  placeholder="Username"
+                  error={errors.username}
+                  touched={touched.username}
                 />
                 <FormikInput
                   name="password"
