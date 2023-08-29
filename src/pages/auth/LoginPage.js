@@ -14,6 +14,7 @@ import { ToastContext } from "../../contexts/ToastContext";
 import { loginUser } from "../../redux/users/actionCreator";
 import playNotification from "../../utils/playNotification";
 import { useDispatch } from "react-redux";
+import { useFacebookLogin } from "facebook-oauth-react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
@@ -89,9 +90,7 @@ function LoginPage() {
     playNotification();
   }
 
-  function errorFacebook() {
-    toast.error("Facebook login failed");
-  }
+  const facebookLogin = useFacebookLogin({ onSuccess: responseFacebook });
 
   return (
     <>
@@ -124,10 +123,7 @@ function LoginPage() {
                 />
                 <SubmitButton text={"Login"} />
                 <GoogleLoginButton googleLogin={googleLogin} />
-                <FacebookLoginButton
-                  responseFacebook={responseFacebook}
-                  errorFacebook={errorFacebook}
-                />
+                <FacebookLoginButton facebookLogin={facebookLogin} />
               </Form>
             )}
           </Formik>
