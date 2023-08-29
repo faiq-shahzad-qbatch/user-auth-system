@@ -1,3 +1,3 @@
 module.exports = {
-  plugins: ["prettier-plugin-tailwindcss", "@svgr/plugin-prettier"],
+  plugins: ["prettier-plugin-tailwindcss"],
 };
