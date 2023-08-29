@@ -7,13 +7,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  fetchFacebookUserData,
-  fetchGoogleUserData,
-  fetchUserData,
-  logout,
-} from "../redux/users/actionCreator";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ReactComponent as DribbleLogo } from "../assets/svgs/dribble-logo.svg";
@@ -23,6 +17,7 @@ import { ReactComponent as LinkedInLogo } from "../assets/svgs/linkedin-logo.svg
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import { ReactComponent as TwitterLogo } from "../assets/svgs/twitter-logo.svg";
 import _ from "lodash";
+import { logout } from "../redux/users/actionCreator";
 import { useNavigate } from "react-router-dom";
 import userImage from "../media/user.png";
 
@@ -34,27 +29,6 @@ function HomePage() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
-  const getUserDetails = useCallback(async () => {
-    const loginMethod = localStorage.getItem("loginMethod");
-
-    switch (loginMethod) {
-      case "google":
-        dispatch(fetchGoogleUserData(navigate));
-        break;
-      case "facebook":
-        dispatch(fetchFacebookUserData(navigate));
-        break;
-      default:
-        const userId = localStorage.getItem("userId");
-        dispatch(fetchUserData(userId, navigate));
-        break;
-    }
-  }, [dispatch, navigate]);
-
-  useEffect(() => {
-    getUserDetails();
-  }, [getUserDetails]);
 
   function handleLogout() {
     dispatch(logout(navigate));
