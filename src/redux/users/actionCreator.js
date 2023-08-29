@@ -24,7 +24,6 @@ const loginUser = (body, navigate) => {
       dispatch(actions.loginUserBegin());
       const response = await axiosInstance.post("auth/login", body);
       if (actions.isSuccess(response)) {
-        console.log(response.data);
         localStorage.setItem("userId", response.data.id);
         localStorage.setItem("access_token", response.data.token);
         navigate("/home");
@@ -49,8 +48,7 @@ const fetchUserData = (userId, navigate) => {
         dispatch(
           actions.apiError("Your session has expired please login again!"),
         );
-        localStorage.clear();
-        navigate("/login");
+        dispatch(logout(navigate));
         return;
       }
       dispatch(actions.apiError("Failed to fetch user data!"));
@@ -73,8 +71,7 @@ const fetchGoogleUserData = (navigate) => {
         dispatch(
           actions.apiError("Your session has expired please login again!"),
         );
-        localStorage.clear();
-        navigate("/login");
+        dispatch(logout(navigate));
         return;
       }
       dispatch(actions.apiError("Failed to fetch google user data!"));
@@ -82,9 +79,32 @@ const fetchGoogleUserData = (navigate) => {
   };
 };
 
-const setFacebookUserData = (data) => {
+const fetchFacebookUserData = (navigate) => {
   return async (dispatch) => {
-    dispatch(actions.setFacebookUserData(data));
+    try {
+      dispatch(actions.fetchFacebookUserDataBegin());
+
+      const params = {
+        fields: "name,email,picture",
+      };
+      const response = await axiosInstance.get(
+        "https://graph.facebook.com/me",
+        { params },
+      );
+
+      if (actions.isSuccess(response)) {
+        dispatch(actions.fetchFacebookUserDataSuccess(response.data));
+      }
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        dispatch(
+          actions.apiError("Your session has expired please login again!"),
+        );
+        dispatch(logout(navigate));
+        return;
+      }
+      dispatch(actions.apiError("Failed to fetch facebook user data!"));
+    }
   };
 };
 
@@ -106,6 +126,6 @@ export {
   loginUser,
   fetchUserData,
   fetchGoogleUserData,
-  setFacebookUserData,
+  fetchFacebookUserData,
   logout,
 };

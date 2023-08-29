@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  fetchFacebookUserData,
   fetchGoogleUserData,
   fetchUserData,
   logout,
@@ -42,6 +43,7 @@ function HomePage() {
         dispatch(fetchGoogleUserData(navigate));
         break;
       case "facebook":
+        dispatch(fetchFacebookUserData(navigate));
         break;
       default:
         const userId = localStorage.getItem("userId");
@@ -150,15 +152,15 @@ function HomePage() {
               <img
                 src="https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=2710&amp;q=80"
                 alt="profile cover"
-                className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
+                className="relative z-20 h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
               />
 
               <div className="p-4 text-center">
                 <div className="mx-auto -mt-20 h-32 w-32 ">
                   <img
-                    src={userImage}
+                    src={userData?.image || userImage}
                     alt="profile"
-                    className="rounded-full border-2 border-indigo-custom "
+                    className="relative z-30 rounded-full border-2 border-indigo-custom bg-white "
                   />
                 </div>
 

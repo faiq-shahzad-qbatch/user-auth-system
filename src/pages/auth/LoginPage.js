@@ -13,7 +13,6 @@ import SubmitButton from "../../components/forms/SubmitButton";
 import { ToastContext } from "../../contexts/ToastContext";
 import { loginUser } from "../../redux/users/actionCreator";
 import playNotification from "../../utils/playNotification";
-import { setFacebookUserData } from "../../redux/users/actionCreator";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
@@ -69,12 +68,12 @@ function LoginPage() {
     localStorage.setItem("access_token", tokenResponse.access_token);
     localStorage.setItem("loginMethod", "google");
     navigate("/home");
-    toast.success("Google Login Successful!");
+    toast.success("Google login successful!");
     playNotification();
   }
 
   function errorGoogle() {
-    toast.error("Google Login Failed!");
+    toast.error("Google login failed!");
   }
 
   const googleLogin = useGoogleLogin({
@@ -83,15 +82,15 @@ function LoginPage() {
   });
 
   function responseFacebook(response) {
-    dispatch(setFacebookUserData(response));
+    localStorage.setItem("access_token", response.accessToken);
     localStorage.setItem("loginMethod", "facebook");
     navigate("/home");
-    toast.success("Facebook Login Successful!");
+    toast.success("Facebook login successful!");
     playNotification();
   }
 
   function errorFacebook() {
-    toast.error("Facebook Login Failed");
+    toast.error("Facebook login failed");
   }
 
   return (

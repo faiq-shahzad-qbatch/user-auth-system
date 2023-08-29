@@ -11,7 +11,8 @@ const actions = {
   FETCH_GOOGLE_USER_DATA_BEGIN: "FETCH_GOOGLE_USER_DATA_BEGIN",
   FETCH_GOOGLE_USER_DATA_SUCCESS: "FETCH_GOOGLE_USER_DATA_SUCCESS",
 
-  SET_FACEBOOK_USER_DATA: "SET_FACEBOOK_USER_DATA",
+  FETCH_FACEBOOK_USER_DATA_BEGIN: "FETCH_FACEBOOK_USER_DATA_BEGIN",
+  FETCH_FACEBOOK_USER_DATA_SUCCESS: "FETCH_FACEBOOK_USER_DATA_SUCCESS",
 
   LOGOUT_BEGIN: "LOGOUT_BEGIN",
   LOGOUT_SUCCESS: "LOGOUT_SUCCESS",
@@ -70,9 +71,15 @@ const actions = {
     };
   },
 
-  setFacebookUserData: (data) => {
+  fetchFacebookUserDataBegin: () => {
     return {
-      type: actions.SET_FACEBOOK_USER_DATA,
+      type: actions.FETCH_FACEBOOK_USER_DATA_BEGIN,
+    };
+  },
+
+  fetchFacebookUserDataSuccess: (data) => {
+    return {
+      type: actions.FETCH_FACEBOOK_USER_DATA_SUCCESS,
       payload: data,
     };
   },

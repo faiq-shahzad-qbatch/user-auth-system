@@ -35,7 +35,11 @@ axiosInstance.interceptors.request.use(
     }
 
     if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
+      if (localStorage.getItem("loginMethod") === "facebook") {
+        config.params["access_token"] = accessToken;
+      } else {
+        config.headers["Authorization"] = `Bearer ${accessToken}`;
+      }
     }
 
     return config;

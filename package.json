@@ -13,6 +13,7 @@
     "chart.js": "^4.3.3",
     "dompurify": "^3.0.5",
     "dotenv": "^16.3.1",
+    "facebook-oauth-react": "^1.1.5",
     "formik": "^2.4.3",
     "helmet": "^7.0.0",
     "howler": "^2.2.3",

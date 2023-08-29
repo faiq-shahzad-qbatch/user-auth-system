@@ -67,10 +67,18 @@ const userReducer = (state = initialState, { type, payload }) => {
         draftState.success = "Successfully fetched google user data!";
       });
 
-    case actions.SET_FACEBOOK_USER_DATA:
+    case actions.FETCH_FACEBOOK_USER_DATA_BEGIN:
+      return produce(state, (draftState) => {
+        draftState.loading = true;
+        draftState.success = null;
+        draftState.error = null;
+      });
+
+    case actions.FETCH_FACEBOOK_USER_DATA_SUCCESS:
       return produce(state, (draftState) => {
         draftState.user = payload;
-        draftState.success = "Successfully set facebook user data!";
+        draftState.loading = false;
+        draftState.success = "Successfully fetched facebook user data!";
       });
 
     case actions.LOGOUT_BEGIN:
