@@ -25,16 +25,12 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import userImage from "../media/user.png";
 
-// import { ToastContext } from "../contexts/ToastContext";
-
 function HomePage() {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const userData = useSelector((state) => state.userReducer.user);
 
   const dispatch = useDispatch();
-
-  // const toast = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -48,7 +44,8 @@ function HomePage() {
       case "facebook":
         break;
       default:
-        dispatch(fetchUserData(navigate));
+        const userId = localStorage.getItem("userId");
+        dispatch(fetchUserData(userId, navigate));
         break;
     }
   }, [dispatch, navigate]);

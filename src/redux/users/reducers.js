@@ -34,6 +34,7 @@ const userReducer = (state = initialState, { type, payload }) => {
 
     case actions.LOGIN_USER_SUCCESS:
       return produce(state, (draftState) => {
+        draftState.user = payload;
         draftState.loading = false;
         draftState.success = "Login successful!";
       });

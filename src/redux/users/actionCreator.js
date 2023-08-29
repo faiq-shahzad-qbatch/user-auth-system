@@ -24,9 +24,11 @@ const loginUser = (body, navigate) => {
       dispatch(actions.loginUserBegin());
       const response = await axiosInstance.post("auth/login", body);
       if (actions.isSuccess(response)) {
+        console.log(response.data);
+        localStorage.setItem("userId", response.data.id);
         localStorage.setItem("access_token", response.data.token);
         navigate("/home");
-        dispatch(actions.loginUserSuccess());
+        dispatch(actions.loginUserSuccess(response.data));
       }
     } catch (error) {
       dispatch(actions.apiError("Login failed!"));
@@ -34,11 +36,11 @@ const loginUser = (body, navigate) => {
   };
 };
 
-const fetchUserData = (navigate) => {
+const fetchUserData = (userId, navigate) => {
   return async (dispatch) => {
     try {
       dispatch(actions.fetchUserDataBegin());
-      const response = await axiosInstance.get(`auth/users/1`);
+      const response = await axiosInstance.get(`auth/users/${userId}`);
       if (actions.isSuccess(response)) {
         dispatch(actions.fetchUserDataSuccess(response.data));
       }

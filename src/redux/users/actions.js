@@ -37,9 +37,10 @@ const actions = {
     };
   },
 
-  loginUserSuccess: () => {
+  loginUserSuccess: (data) => {
     return {
       type: actions.LOGIN_USER_SUCCESS,
+      payload: data,
     };
   },
 

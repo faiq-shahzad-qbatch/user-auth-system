@@ -23,12 +23,12 @@ function SignUpPage() {
   const validationSchema = Joi.object({
     firstName: Joi.string()
       .max(20)
-      .regex(/^[a-zA-Z ]+$/, "alphabets only")
+      .regex(/^(?=.*[a-zA-Z])[a-zA-Z ]+$/, "alphabets only")
       .required()
       .label("First Name"),
     lastName: Joi.string()
       .max(20)
-      .regex(/^[a-zA-Z ]+$/, "alphabets only")
+      .regex(/^(?=.*[a-zA-Z])[a-zA-Z ]+$/, "alphabets only")
       .required()
       .label("Last Name"),
     username: Joi.string().alphanum().max(20).required().label("Username"),
