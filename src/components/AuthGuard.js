@@ -50,7 +50,6 @@ function AuthGuard({ children }) {
       autoClose: false,
     });
     navigate("/login");
-    setRenderChildren(true);
   }, [location, getUserData, navigate]);
 
   return <>{renderChildren && children}</>;
