@@ -24,13 +24,18 @@ function App() {
       <Notify />
       <Suspense fallback={<Spinner />}>
         <Router>
-          <AuthGuard>
-            <Routes>
-              <Route exact path="/" element={<SignUpPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/home" element={<HomePage />} />
-            </Routes>
-          </AuthGuard>
+          <Routes>
+            <Route exact path="/" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/home"
+              element={
+                <AuthGuard>
+                  <HomePage />
+                </AuthGuard>
+              }
+            />
+          </Routes>
         </Router>
       </Suspense>
     </>
