@@ -42,7 +42,7 @@ function HomePage() {
     <>
       <aside
         className={`${
-          showSidebar ? "translate-x-0" : "-translate-x-full"
+          showSidebar ? "translate-x-0" : "-translate-x-full overflow-hidden"
         } fixed inset-0 z-40 w-2/3 transform flex-col items-center justify-start bg-gray-700 transition-transform duration-300 ease-in-out dark:bg-gray-900 md:w-1/3 lg:w-1/6`}
       >
         {showSidebar && (
@@ -84,8 +84,8 @@ function HomePage() {
         </nav>
       </aside>
 
-      <div className="flex h-screen w-screen flex-col items-center justify-start overflow-hidden bg-[#E2E8F0] dark:bg-gray-800">
-        <header className="flex w-full items-center justify-start bg-gray-700 px-4 text-white dark:bg-gray-900">
+      <div className="flex h-screen flex-col overflow-hidden">
+        <header className="flex items-center justify-start bg-gray-700 px-4 text-white dark:bg-gray-900">
           <div className="flex items-center justify-center">
             <div
               className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm bg-indigo-custom text-white hover:bg-indigo-500"
@@ -116,7 +116,7 @@ function HomePage() {
           </div>
         </header>
 
-        <main className="flex h-full w-full flex-col items-center justify-start overflow-y-auto overflow-x-hidden dark:text-gray-200">
+        <main className="overflow-y-auto overflow-x-hidden bg-[#E2E8F0] dark:bg-gray-800 dark:text-gray-200">
           <div className="mx-auto p-6">
             <div>
               <h1 className="text-4xl font-semibold">Profile</h1>

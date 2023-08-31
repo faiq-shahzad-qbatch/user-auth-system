@@ -26,7 +26,7 @@ const loginUser = (body, navigate) => {
       if (actions.isSuccess(response)) {
         localStorage.setItem("userId", response.data.id);
         localStorage.setItem("access_token", response.data.token);
-        navigate("/home");
+        navigate("/");
         dispatch(actions.loginUserSuccess(response.data));
       }
     } catch (error) {

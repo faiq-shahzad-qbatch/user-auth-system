@@ -15,6 +15,9 @@ const LoginPage = lazy(() =>
 const SignUpPage = lazy(() =>
   import(/* webpackChunkName: "SignUpPage" */ "./pages/auth/SignUpPage"),
 );
+const PageNotFound = lazy(() =>
+  import(/* webpackChunkName: "PageNotFound" */ "./pages/PageNotFound"),
+);
 
 function App() {
   const showLoader = useSelector((state) => state.userReducer.loading);
@@ -25,16 +28,17 @@ function App() {
       <Suspense fallback={<Spinner />}>
         <Router>
           <Routes>
-            <Route exact path="/" element={<SignUpPage />} />
-            <Route path="/login" element={<LoginPage />} />
             <Route
-              path="/home"
+              path="/"
               element={
                 <AuthGuard>
                   <HomePage />
                 </AuthGuard>
               }
             />
+            <Route exact path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>
       </Suspense>

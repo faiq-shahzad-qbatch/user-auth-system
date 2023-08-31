@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AuthModal from "../../components/forms/AuthModal";
 import BackgroundImage from "../../components/BackgroundImage";
@@ -19,6 +19,16 @@ function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = localStorage.access_token;
+    if (accessToken) {
+      navigate("/");
+      return;
+    }
+  }, [navigate]);
 
   const validationSchema = Joi.object({
     firstName: Joi.string()
@@ -57,8 +67,6 @@ function SignUpPage() {
     password: "",
     confirmPassword: "",
   };
-
-  const navigate = useNavigate();
 
   function togglePasswordVisibility() {
     setShowPassword(!showPassword);
